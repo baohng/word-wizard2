@@ -69,6 +69,28 @@ const WordTable = ({ words }) => {
     }
   };
 
+  // Delete word function
+  const deleteWord = async (wordId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/words/${wordId}/delete`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      // Remove the word from the local storage to update the UI
+      setData(data.filter((word) => word.id !== wordId));
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error deleting word: ", error);
+    }
+  };
+
   const isEditing = (record) => record.id === editingKey;
   const edit = (record) => {
     form.setFieldsValue({
@@ -163,7 +185,7 @@ const WordTable = ({ words }) => {
             <Typography.Link
               className="ml-3"
               disabled={editingKey !== ""}
-              onClick={() => edit(record)}
+              onClick={() => deleteWord(record.id)}
             >
               Delete
             </Typography.Link>
