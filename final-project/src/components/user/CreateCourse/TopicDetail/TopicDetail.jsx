@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 // import { useParams } from "react-router-dom";
 import { Button, Form, Input } from "antd";
-import ListEditWord from "./ListEditWord/ListEditWord";
+import WordTable from "./WordTable/WordTable";
 
 const TopicDetail = () => {
+  const [showWordCollection, setShowWordCollection] = useState(true);
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState(false);
 
@@ -75,13 +76,13 @@ const TopicDetail = () => {
 
   return (
     <>
-      <ListEditWord />
-      <hr className="mb-6" />
       <p className="text-left mb-3 font-bold">Add new words</p>
       <Form
+        className="ml-0 m-3"
         form={form}
-        name="add-woed-form"
+        name="add-word-form"
         layout="inline"
+
         // onFinish={handleSubmit}
       >
         <Form.Item
@@ -158,6 +159,12 @@ const TopicDetail = () => {
           )}
         </Form.Item>
       </Form>
+      <hr className="mt-6" />
+      {showWordCollection ? (
+        <WordTable />
+      ) : (
+        <p className="text-left mt-3">No word added yet.</p>
+      )}
     </>
   );
 };

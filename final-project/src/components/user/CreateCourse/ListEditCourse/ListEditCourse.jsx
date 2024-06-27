@@ -79,12 +79,6 @@ const ListEditCourse = () => {
               >
                 edit
               </Link>,
-              <Link
-                to={`http://localhost:5173/user/courses/${course.id}`}
-                key="list-loadmore-more"
-              >
-                more
-              </Link>,
             ]}
           >
             <List.Item.Meta
@@ -102,7 +96,6 @@ const ListEditCourse = () => {
               }
               description={course.description}
             />
-            <div>content</div>
           </List.Item>
         )}
       />
