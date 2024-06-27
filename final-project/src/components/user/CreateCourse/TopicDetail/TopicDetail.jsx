@@ -7,30 +7,33 @@ const TopicDetail = () => {
   const [showWordCollection, setShowWordCollection] = useState(false);
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState(false);
+  const [words, setWords] = useState([]);
 
   const { topicId } = useParams();
 
-  // useEffect(() => {
-  //   const fetchTopicDetails = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `http://localhost:8080/api/topics/${topicId}/`
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error(`HTTP error! status: ${response.status}`);
-  //       }
-  //       const data = await response.json();
-  //       console.log("word: ", data);
-  //       // Set state with fetched topic details
-  //     } catch (error) {
-  //       console.error("Error fetching topic details: ", error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchTopicDetails = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/topics/${topicId}/words`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("word: ", data);
+        // Set state with fetched topic details
+        setWords(data);
+        setShowWordCollection(true);
+      } catch (error) {
+        console.error("Error fetching topic details: ", error);
+      }
+    };
 
-  //   if (topicId) {
-  //     fetchTopicDetails();
-  //   }
-  // }, [topicId]);
+    if (topicId) {
+      fetchTopicDetails();
+    }
+  }, [topicId]);
 
   const addWordToTopic = async (topicId, wordData) => {
     try {
@@ -51,7 +54,6 @@ const TopicDetail = () => {
 
       const data = await response.json();
       console.log("Word added successfully:", data);
-      setShowWordCollection(true);
       // Optionally, update your UI here to reflect the added word
     } catch (error) {
       console.error("Error adding word to topic:", error);
@@ -162,7 +164,7 @@ const TopicDetail = () => {
       </Form>
       <hr className="mt-6" />
       {showWordCollection ? (
-        <WordTable />
+        <WordTable words={words} />
       ) : (
         <p className="text-left mt-3">No word added yet.</p>
       )}

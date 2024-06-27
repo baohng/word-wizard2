@@ -32,7 +32,11 @@ const CreateCourse = () => {
           {showForm ? "Back to all courses" : "Create Course"}
         </button>
       </div>
-      {showForm ? <CreateCourseForm /> : <ListEditCourse />}
+      {showForm ? (
+        <CreateCourseForm onFormSubmit={() => setShowForm(false)} />
+      ) : (
+        <ListEditCourse />
+      )}
     </div>
   );
 };

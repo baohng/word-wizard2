@@ -1,11 +1,10 @@
-import { useNavigate } from "react-router-dom";
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { Button, Form, Input } from "antd";
 
 const { TextArea } = Input;
 
-const CreateCourseForm = () => {
-  const navigate = useNavigate();
-
+const CreateCourseForm = (props) => {
   const handleSubmit = async (values) => {
     try {
       // Then, include the imageUrl in the course data and send it to the server
@@ -24,8 +23,8 @@ const CreateCourseForm = () => {
       }
 
       const data = await response.json();
+      props.onFormSubmit();
       console.log("Course created successfully!", data);
-      navigate(`/courses/${data.courseId}`);
     } catch (error) {
       console.error("There was an error creating the course:", error);
     }

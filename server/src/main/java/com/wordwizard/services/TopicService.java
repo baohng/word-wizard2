@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -67,5 +68,11 @@ public class TopicService {
             topic.setCourse(course);
             return topicRepository.save(topic);
         }).orElseThrow(() -> new EntityNotFoundException("Course not found with id " + courseId));
+    }
+
+    public List<Word> getWordsByTopicId(Long topicId) {
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new EntityNotFoundException("Topic not found with ID: " + topicId));
+        return new ArrayList<>(topic.getWords());
     }
 }
