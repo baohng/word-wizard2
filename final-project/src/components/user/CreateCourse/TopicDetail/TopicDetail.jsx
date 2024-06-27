@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Button, Form, Input } from "antd";
 import WordTable from "./WordTable/WordTable";
 
 const TopicDetail = () => {
-  const [showWordCollection, setShowWordCollection] = useState(true);
+  const [showWordCollection, setShowWordCollection] = useState(false);
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState(false);
 
-  // const { topicId } = useParams();
+  const { topicId } = useParams();
 
   // useEffect(() => {
   //   const fetchTopicDetails = async () => {
@@ -32,42 +32,44 @@ const TopicDetail = () => {
   //   }
   // }, [topicId]);
 
-  // const addWordToTopic = async (topicId, wordData) => {
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:8080/api/topics/${topicId}/add-word`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(wordData),
-  //       }
-  //     );
+  const addWordToTopic = async (topicId, wordData) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/topics/${topicId}/add-word`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(wordData),
+        }
+      );
 
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-  //     const data = await response.json();
-  //     console.log("Word added successfully:", data);
-  //     // Optionally, update your UI here to reflect the added word
-  //   } catch (error) {
-  //     console.error("Error adding word to topic:", error);
-  //   }
-  // };
+      const data = await response.json();
+      console.log("Word added successfully:", data);
+      setShowWordCollection(true);
+      // Optionally, update your UI here to reflect the added word
+    } catch (error) {
+      console.error("Error adding word to topic:", error);
+    }
+  };
 
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   // Assuming `topicId` is available in your component's state or props
-  //   // and `wordData` is an object containing the word details from your form
-  //   const wordData = {
-  //     name: "ExampleWord",
-  //     meaning: "Example meaning",
-  //     // other word details
-  //   };
-  //   addWordToTopic(topicId, wordData);
-  // };
+  const onFinish = async (values) => {
+    // Assuming `topicId` is available in your component's state or props
+    // and `wordData` is an object containing the word details from your form
+    const wordData = {
+      word: values.word,
+      meaning: values.meaning,
+      exampleSentences: values.exampleSentences,
+      phonetic: values.phonetic,
+      // other word details
+    };
+    addWordToTopic(topicId, wordData);
+  };
 
   // To disable submit button at the beginning.
   useEffect(() => {
@@ -82,8 +84,7 @@ const TopicDetail = () => {
         form={form}
         name="add-word-form"
         layout="inline"
-
-        // onFinish={handleSubmit}
+        onFinish={onFinish}
       >
         <Form.Item
           name="word"
@@ -114,11 +115,11 @@ const TopicDetail = () => {
           />
         </Form.Item>
         <Form.Item
-          name="phonetic"
+          name="exampleSentences"
           rules={[
             {
               required: true,
-              message: "Please input your username!",
+              message: "Please input your example sentences!",
             },
           ]}
         >
@@ -128,11 +129,11 @@ const TopicDetail = () => {
           />
         </Form.Item>
         <Form.Item
-          name="exampleSentences"
+          name="phonetic"
           rules={[
             {
               required: true,
-              message: "Please input your username!",
+              message: "Please input phonetic...!",
             },
           ]}
         >
