@@ -61,4 +61,11 @@ public class TopicService {
         word.setTopic(topic);
         return wordRepository.save(word);
     }
+
+    public Topic createTopicForCourse(Long courseId, Topic topic) {
+        return courseRepository.findById(courseId).map(course -> {
+            topic.setCourse(course);
+            return topicRepository.save(topic);
+        }).orElseThrow(() -> new EntityNotFoundException("Course not found with id " + courseId));
+    }
 }

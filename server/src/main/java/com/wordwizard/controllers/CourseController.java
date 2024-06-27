@@ -53,9 +53,11 @@ public class CourseController {
         return new ResponseEntity<>(topics, HttpStatus.OK);
     }
 
-//    @PostMapping("/{courseId}/create-topic")
-//    public ResponseEntity<Topic> addTopic(@PathVariable Long courseId, @RequestBody Topic topic) {
-//        Topic savedTopic = topicService.addTopic(topic, courseId);
-//        return new ResponseEntity<>(savedTopic, HttpStatus.CREATED);
-//    }
+    @PostMapping("/{courseId}/create-topic")
+    public ResponseEntity<Topic> createTopic(@PathVariable Long courseId, @RequestBody Topic topic) {
+        // Logic to associate the topic with the course and save it to the database
+        // This might involve calling a method on a service class
+        Topic createdTopic = topicService.createTopicForCourse(courseId, topic);
+        return new ResponseEntity<>(createdTopic, HttpStatus.CREATED);
+    }
 }
