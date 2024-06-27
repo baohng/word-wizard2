@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, Form, Input } from "antd";
@@ -52,9 +53,10 @@ const TopicDetail = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
-      console.log("Word added successfully:", data);
+      const addedWord = await response.json();
+      console.log("Word added successfully:", addedWord);
       // Optionally, update your UI here to reflect the added word
+      setWords((prevWords) => [...prevWords, addedWord]);
     } catch (error) {
       console.error("Error adding word to topic:", error);
     }

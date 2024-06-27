@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, InputNumber, Popconfirm, Table, Typography } from "antd";
 
 const EditableCell = ({
@@ -8,7 +8,6 @@ const EditableCell = ({
   title,
   inputType,
   record,
-  index,
   children,
   ...restProps
 }) => {
@@ -38,10 +37,38 @@ const EditableCell = ({
     </td>
   );
 };
+
 const WordTable = ({ words }) => {
   const [form] = Form.useForm();
   const [data, setData] = useState(words);
   const [editingKey, setEditingKey] = useState("");
+  useEffect(() => {
+    setData(words);
+  }, [words]);
+
+  // Update word function
+  const updateWord = async (updatedWord) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/words/${updatedWord.id}/update`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedWord),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error updating word: ", error);
+    }
+  };
+
   const isEditing = (record) => record.id === editingKey;
   const edit = (record) => {
     form.setFieldsValue({
@@ -56,17 +83,18 @@ const WordTable = ({ words }) => {
   const cancel = () => {
     setEditingKey("");
   };
+
+  // function confirm save edited word
   const save = async (key) => {
     try {
       const row = await form.validateFields();
       const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
+      const index = newData.findIndex((item) => key === item.id);
       if (index > -1) {
         const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
+        const updatedItem = { ...item, ...row };
+        const updatedWord = await updateWord(updatedItem);
+        newData.splice(index, 1, updatedWord);
         setData(newData);
         setEditingKey("");
       } else {
@@ -92,9 +120,15 @@ const WordTable = ({ words }) => {
       editable: true,
     },
     {
+      title: "Phonetic",
+      dataIndex: "phonetic",
+      width: "15%",
+      editable: true,
+    },
+    {
       title: "Example Sentences",
       dataIndex: "exampleSentences",
-      width: "40%",
+      width: "30%",
       editable: true,
     },
     {
@@ -105,7 +139,7 @@ const WordTable = ({ words }) => {
         return editable ? (
           <span>
             <Typography.Link
-              onClick={() => save(record.key)}
+              onClick={() => save(record.id)}
               style={{
                 marginRight: 8,
               }}
@@ -117,12 +151,23 @@ const WordTable = ({ words }) => {
             </Popconfirm>
           </span>
         ) : (
-          <Typography.Link
-            disabled={editingKey !== ""}
-            onClick={() => edit(record)}
-          >
-            Edit
-          </Typography.Link>
+          <>
+            <Typography.Link
+              className="mr-3"
+              disabled={editingKey !== ""}
+              onClick={() => edit(record)}
+            >
+              Edit
+            </Typography.Link>
+            |
+            <Typography.Link
+              className="ml-3"
+              disabled={editingKey !== ""}
+              onClick={() => edit(record)}
+            >
+              Delete
+            </Typography.Link>
+          </>
         );
       },
     },
