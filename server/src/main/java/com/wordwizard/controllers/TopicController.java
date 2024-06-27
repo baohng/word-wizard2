@@ -21,6 +21,12 @@ public class TopicController {
         this.topicService = topicService;
     }
 
+    @PostMapping("/{topicId}/add-word")
+    public ResponseEntity<Word> addWordToTopic(@PathVariable Long topicId, @RequestBody Word word) {
+        Word savedWord = topicService.addWordToTopic(topicId, word);
+        return new ResponseEntity<>(savedWord, HttpStatus.CREATED);
+    }
+
 
     public void addTopic(Topic topic) {
         topicService.addTopic(topic);
