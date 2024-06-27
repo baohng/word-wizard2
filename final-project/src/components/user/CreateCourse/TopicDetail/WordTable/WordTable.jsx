@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Form, Input, InputNumber, Popconfirm, Table, Typography } from "antd";
 
 const EditableCell = ({
@@ -42,9 +43,27 @@ const WordTable = ({ words }) => {
   const [form] = Form.useForm();
   const [data, setData] = useState(words);
   const [editingKey, setEditingKey] = useState("");
+  const { topicId } = useParams();
   useEffect(() => {
     setData(words);
   }, [words]);
+
+  // Function to fetch the latest words from the server
+  const fetchLatestWords = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/topics/${topicId}/words`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const latestWords = await response.json();
+
+      setData(latestWords);
+    } catch (error) {
+      console.error("Error fetching topic details: ", error);
+    }
+  };
 
   // Update word function
   const updateWord = async (updatedWord) => {
@@ -81,11 +100,12 @@ const WordTable = ({ words }) => {
 
       // Remove the word from the local storage to update the UI
       setData(data.filter((word) => word.id !== wordId));
-
+      await fetchLatestWords();
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return await response.json();
+      const text = await response.text();
+      return text ? JSON.parse(text) : {};
     } catch (error) {
       console.error("Error deleting word: ", error);
     }

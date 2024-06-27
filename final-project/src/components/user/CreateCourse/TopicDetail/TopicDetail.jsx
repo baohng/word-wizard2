@@ -36,8 +36,27 @@ const TopicDetail = () => {
     }
   }, [topicId]);
 
-  const addWordToTopic = async (topicId, wordData) => {
+  const fetchAndAddWordToTopic = async (topicId, wordData) => {
     try {
+      // Step 1: Fetch existing words
+      const existingWordsResponse = await fetch(
+        `http://localhost:8080/api/topics/${topicId}/words`
+      );
+      if (!existingWordsResponse.ok) {
+        throw new Error(`HTTP error! status: ${existingWordsResponse.status}`);
+      }
+      const existingWords = await existingWordsResponse.json();
+
+      // Step 2: Check if the word already exists
+      const wordExists = existingWords.some(
+        (word) => word.word === wordData.word
+      );
+      if (wordExists) {
+        console.log("Word already exists in the database.");
+        return; // Stop the function if the word already exists
+      }
+
+      // Step 3: Add the new word if it doesn't exist
       const response = await fetch(
         `http://localhost:8080/api/topics/${topicId}/add-word`,
         {
@@ -72,7 +91,7 @@ const TopicDetail = () => {
       phonetic: values.phonetic,
       // other word details
     };
-    addWordToTopic(topicId, wordData);
+    fetchAndAddWordToTopic(topicId, wordData);
   };
 
   // To disable submit button at the beginning.
