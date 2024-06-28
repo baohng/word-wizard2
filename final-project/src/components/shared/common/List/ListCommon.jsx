@@ -108,6 +108,7 @@ const ListCommon = () => {
             marginBottom: "10px",
           }}
           key={course.id}
+          onClick={() => navigate(`/user/courses/${course.id}`)}
           actions={[
             <IconText
               icon={StarOutlined}
