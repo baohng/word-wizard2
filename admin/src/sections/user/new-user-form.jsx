@@ -33,6 +33,7 @@ export default function NewUserForm({ open, onClose, onSave }) {
       roles,
     };
     onSave(newUser);
+    
   };
 
   return (

@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import React, { useState, useEffect } from 'react';
 
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -19,6 +20,35 @@ import AppConversionRates from '../app-conversion-rates';
 // ----------------------------------------------------------------------
 
 export default function AppView() {
+  const [monthlyRegistrations, setMonthlyRegistrations] = useState([]);
+
+  useEffect(() => {
+    const fetchRegistrationsByMonth = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/user-manager/registrations-by-month');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        // Format the data for the chart component
+        const formattedData = Object.entries(data)
+          .sort((a, b) => a[0].localeCompare(b[0])) // Sort by year-month
+          .map(([yearMonth, count]) => ({
+            name: yearMonth,
+            type: 'column',
+            fill: 'solid',
+            data: [count]
+          }));
+
+        setMonthlyRegistrations(formattedData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchRegistrationsByMonth();
+  }, []);
   return (
     <Container maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 5 }}>
@@ -62,47 +92,16 @@ export default function AppView() {
           />
         </Grid>
 
-        <Grid xs={12} md={6} lg={8}>
-          <AppWebsiteVisits
-            title="Website Visits"
-            subheader="(+43%) than last year"
-            chart={{
-              labels: [
-                '01/01/2003',
-                '02/01/2003',
-                '03/01/2003',
-                '04/01/2003',
-                '05/01/2003',
-                '06/01/2003',
-                '07/01/2003',
-                '08/01/2003',
-                '09/01/2003',
-                '10/01/2003',
-                '11/01/2003',
-              ],
-              series: [
-                {
-                  name: 'Team A',
-                  type: 'column',
-                  fill: 'solid',
-                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
-                },
-                {
-                  name: 'Team B',
-                  type: 'area',
-                  fill: 'gradient',
-                  data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-                },
-                {
-                  name: 'Team C',
-                  type: 'line',
-                  fill: 'solid',
-                  data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
-                },
-              ],
-            }}
-          />
-        </Grid>
+        <Grid item xs={12} md={6} lg={8}>
+      <AppWebsiteVisits
+        title="User Registrations by Month"
+        subheader="Last 12 Months"
+        chart={{
+          labels: monthlyRegistrations.map(item => item.name),
+          series: monthlyRegistrations,
+        }}
+      />
+    </Grid>
 
         <Grid xs={12} md={6} lg={4}>
           <AppCurrentVisits
