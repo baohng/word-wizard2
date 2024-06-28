@@ -47,7 +47,7 @@ const MainLayout = () => {
             {
               key: "home",
               icon: <HomeOutlined />,
-              label: <Link to="/user/home">Home</Link>,
+              label: <Link to="/user/home">All courses</Link>,
             },
             {
               key: "handbook",
