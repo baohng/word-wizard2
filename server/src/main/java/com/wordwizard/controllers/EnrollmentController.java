@@ -20,6 +20,8 @@ public class EnrollmentController {
         this.enrollmentService = enrollmentService;
     }
 
+    
+
     public void addEnrollment(Enrollment enrollment) {
         enrollmentService.addEnrollment(enrollment);
     }

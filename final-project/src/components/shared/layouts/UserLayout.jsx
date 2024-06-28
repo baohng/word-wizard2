@@ -78,7 +78,7 @@ const MainLayout = () => {
             {
               key: "logout",
               icon: <LogoutOutlined />,
-              label: <Link to="/user/logout">Logout</Link>,
+              label: <Link to="/sign-in">Logout</Link>,
             },
           ]}
         />

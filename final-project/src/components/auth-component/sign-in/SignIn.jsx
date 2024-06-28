@@ -30,7 +30,7 @@ const SignIn = () => {
 
       // If the sign in is successful, redirect to the dashboard
       if (data.roles.includes("STUDENT") || data.roles.includes("TEACHER")) {
-        navigate("/user");
+        navigate("/user/home");
       } else {
         navigate("/admin");
       }
