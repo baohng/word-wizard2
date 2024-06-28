@@ -41,6 +41,7 @@ public class Course {
             mappedBy = "course",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @JsonManagedReference
     private List<Enrollment> enrollments = new ArrayList<>();
 
     @OneToMany(

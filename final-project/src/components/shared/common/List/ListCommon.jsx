@@ -42,23 +42,44 @@ const ListCommon = () => {
 
   // Handle enrollment
   const enrollCourse = async (courseId) => {
+    const currentUserId = localStorage.getItem("userId");
+    console.log(
+      "Attempting to enroll. UserId:",
+      currentUserId,
+      "CourseId:",
+      courseId
+    );
+
     try {
-      const response = await fetch("http://localhost:8080/enrollments", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: "",
-          courseId: courseId,
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:8080/api/enrollments/enroll",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: currentUserId,
+            courseId: courseId,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Failed to enroll in course");
+        const errorDetails = await response.text(); // Attempt to read response text for more details
+        console.error(
+          "Failed to enroll in course. Status:",
+          response.status,
+          "Details:",
+          errorDetails
+        );
+        throw new Error(
+          `Failed to enroll in course. Status: ${response.status}`
+        );
       }
 
       // Handle successful enrollment (e.g., show a message or update UI)
+      console.log("Successfully enrolled in course");
     } catch (error) {
       console.error("Error enrolling in course:", error);
     }
