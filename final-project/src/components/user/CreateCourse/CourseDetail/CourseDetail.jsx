@@ -1,10 +1,9 @@
-import { useParams } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Input } from "antd";
 import CreateTopicForm from "../CreateTopicForm/CreateTopicForm";
 
 import ListEditTopic from "../Topic/ListEditTopic";
-import { AuthContext } from "../../../auth-component/AuthProvider";
 
 const { Search } = Input;
 const CourseDetail = () => {
@@ -12,7 +11,8 @@ const CourseDetail = () => {
   // course state
   const [course, setCourse] = useState({});
   const [showTopicForm, setShowTopicForm] = useState(false);
-  const { userRole } = useContext(AuthContext);
+  const userRole = localStorage.getItem("role");
+  const navigate = useNavigate();
 
   // Fetch course details when component mounts or courseId changes
   useEffect(() => {
@@ -35,6 +35,16 @@ const CourseDetail = () => {
     fetchCourseDetails();
   }, [courseId]);
 
+  const handleStartToLearn = () => {
+    // Example: Navigate to the first topic of the course
+    // This assumes you have a route set up for '/course/:courseId/topic/:topicId'
+    // You would replace 'courseId' and '1' with dynamic values as needed
+    navigate(`/course/courseId/topic/1`);
+
+    // Alternatively, you could perform other actions here,
+    // such as updating user progress in a database, etc.
+  };
+
   return (
     <div>
       <h1>{course.name}</h1>
@@ -52,7 +62,7 @@ const CourseDetail = () => {
           />
         )}
 
-        {userRole === "teacher" && (
+        {userRole === "TEACHER" && (
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             onClick={() => setShowTopicForm(!showTopicForm)}
@@ -70,7 +80,7 @@ const CourseDetail = () => {
       {userRole === "STUDENT" && (
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={""}
+          onClick={handleStartToLearn}
         >
           Start to learn
         </button>
