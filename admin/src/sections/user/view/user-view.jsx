@@ -11,19 +11,23 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
 import Iconify from 'src/components/iconify';
-import Scrollbar from 'src/components/scrollbar';
+import Scrollbar from 'src/components/scrollbar'; 
 
+import NewUserForm from '../NewUserForm'; 
 import TableNoData from '../table-no-data';
 import UserTableRow from '../user-table-row';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import UserTableToolbar from '../user-table-toolbar';
-import { emptyRows, applyFilter, getComparator } from '../utils';
-
+import { emptyRows, applyFilter, getComparator } from '../utils'; 
+// import the new user form component
+ 
+ 
 // ----------------------------------------------------------------------
 
 export default function UserPage() {
   const [usersData, setUsersData] = useState([]);
+  const [isFormOpen, setIsFormOpen] = useState(false); // state for form dialog
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -97,6 +101,34 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
+  const handleNewUserClick = () => {
+    setIsFormOpen(true);
+  };
+
+  const handleFormClose = () => {
+    setIsFormOpen(false);
+  };
+
+  const handleFormSave = async (newUser) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/user-manager/add-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const savedUser = await response.json();
+      setUsersData((prevData) => [...prevData, savedUser]);
+      setIsFormOpen(false);
+    } catch (error) {
+      console.error('Error saving data: ', error);
+    }
+  };
+
   const dataFiltered = applyFilter({
     inputData: usersData,
     comparator: getComparator(order, orderBy),
@@ -110,7 +142,7 @@ export default function UserPage() {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Users</Typography>
 
-        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleNewUserClick}>
           New User
         </Button>
       </Stack>
@@ -176,6 +208,8 @@ export default function UserPage() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
+
+      <NewUserForm open={isFormOpen} onClose={handleFormClose} onSave={handleFormSave} />
     </Container>
   );
 }
