@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -18,12 +19,10 @@ import Iconify from 'src/components/iconify';
 
 export default function UserTableRow({
   selected,
-  name,
-  avatarUrl,
-  company,
-  role,
-  isVerified,
-  status,
+  username,
+  email,
+  isActive,
+  roles,
   handleClick,
 }) {
   const [open, setOpen] = useState(null);
@@ -45,21 +44,23 @@ export default function UserTableRow({
 
         <TableCell component="th" scope="row" padding="none">
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt={name} src={avatarUrl} />
+            <Avatar alt={username} />
             <Typography variant="subtitle2" noWrap>
-              {name}
+              {username}
             </Typography>
           </Stack>
         </TableCell>
 
-        <TableCell>{company}</TableCell>
+        <TableCell>{email}</TableCell>
 
-        <TableCell>{role}</TableCell>
+        <TableCell>{roles.join(', ')}</TableCell>
 
-        <TableCell align="center">{isVerified ? 'Yes' : 'No'}</TableCell>
+        <TableCell align="center">{isActive ? 'Yes' : 'No'}</TableCell>
 
         <TableCell>
-          <Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label>
+          <Label color={(isActive === false && 'error') || 'success'}>
+            {isActive ? 'Active' : 'Inactive'}
+          </Label>
         </TableCell>
 
         <TableCell align="right">
@@ -94,12 +95,10 @@ export default function UserTableRow({
 }
 
 UserTableRow.propTypes = {
-  avatarUrl: PropTypes.any,
-  company: PropTypes.any,
-  handleClick: PropTypes.func,
-  isVerified: PropTypes.any,
-  name: PropTypes.any,
-  role: PropTypes.any,
-  selected: PropTypes.any,
-  status: PropTypes.string,
+  username: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  roles: PropTypes.arrayOf(PropTypes.string).isRequired,
+  handleClick: PropTypes.func.isRequired,
+  selected: PropTypes.bool.isRequired,
 };
