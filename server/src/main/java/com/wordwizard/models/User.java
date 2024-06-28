@@ -54,7 +54,7 @@ public class User {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    @JsonManagedReference
+    @JsonManagedReference("user-enrollment")
     private List<Enrollment> enrollments = new ArrayList<>();
 
     @OneToMany(

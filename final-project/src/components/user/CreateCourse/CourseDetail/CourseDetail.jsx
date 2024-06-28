@@ -2,7 +2,9 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Input } from "antd";
 import CreateTopicForm from "../CreateTopicForm/CreateTopicForm";
+
 import ListEditTopic from "../Topic/ListEditTopic";
+// import { AuthContext } from "../../../auth-component/AuthProvider";
 
 const { Search } = Input;
 const CourseDetail = () => {

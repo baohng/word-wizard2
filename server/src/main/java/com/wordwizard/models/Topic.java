@@ -32,7 +32,7 @@ public class Topic {
 
     @ManyToOne
     @JoinColumn(name = "course_id")
-    @JsonBackReference
+    @JsonBackReference("course-topic")
     private Course course;
 
 }

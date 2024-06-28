@@ -41,7 +41,7 @@ public class Course {
             mappedBy = "course",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference("course-enrollment")
     private List<Enrollment> enrollments = new ArrayList<>();
 
     @OneToMany(
@@ -66,6 +66,6 @@ public class Course {
     @OneToMany(
             mappedBy = "course"
     )
-    @JsonManagedReference
+    @JsonManagedReference("course-topic")
     private List<Topic> topics = new ArrayList<>();
 }
