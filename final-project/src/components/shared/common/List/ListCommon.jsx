@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
 import { Button, List, Space } from "antd";
 // import { Avatar } from "antd";
@@ -21,6 +22,7 @@ IconText.propTypes = {
 
 const ListCommon = () => {
   const [courses, setCourses] = useState([]);
+  const navigate = useNavigate();
 
   // Fetch courses when component mounts
   useEffect(() => {
@@ -79,6 +81,7 @@ const ListCommon = () => {
       }
 
       // Handle successful enrollment (e.g., show a message or update UI)
+      navigate(`/user/courses/${courseId}`);
       console.log("Successfully enrolled in course");
     } catch (error) {
       console.error("Error enrolling in course:", error);
