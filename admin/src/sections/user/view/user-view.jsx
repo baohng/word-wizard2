@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -25,6 +25,25 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 // ----------------------------------------------------------------------
 
 export default function UserPage() {
+  const [usersData, setUsersData] = useState([]);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/user-manager/users');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setUsersData(data);
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  console.log('Users:', usersData);
+
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
