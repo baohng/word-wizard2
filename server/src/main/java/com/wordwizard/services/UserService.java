@@ -8,8 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -66,8 +67,37 @@ public class UserService {
     public User saveUser(User user) {
         return userRepository.save(user);
     }
-
+    public User addUser(User user) {
+        return userRepository.save(user);
+    }
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    public User updateUser( User updatedUser) {
+        Optional<User> optionalUser = userRepository.findById(updatedUser.getUserId());
+        if (optionalUser.isPresent()) {
+            User existingUser = optionalUser.get();
+            existingUser.setUsername(updatedUser.getUsername());
+            existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setPassword(updatedUser.getPassword()); // Only if you allow updating the password this way
+            existingUser.setIsActive(updatedUser.getIsActive());
+            existingUser.setRoles(updatedUser.getRoles());
+            existingUser.setUpdatedAt(updatedUser.getUpdatedAt());
+
+            return userRepository.save(existingUser);
+        } else {
+            return null;
+        }
+    }
+    public Map<String, Long> getRegistrationsByMonth(LocalDateTime startDate, LocalDateTime endDate) {
+        List<Object[]> results = userRepository.countRegistrationsByMonth(startDate, endDate);
+        Map<String, Long> registrationsByMonth = new HashMap<>();
+        for (Object[] result : results) {
+            String month = (String) result[0];
+            Long count = ((Number) result[1]).longValue();
+            registrationsByMonth.put(month, count);
+        }
+        return registrationsByMonth;
     }
 }
