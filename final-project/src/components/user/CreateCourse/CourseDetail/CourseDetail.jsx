@@ -39,7 +39,7 @@ const CourseDetail = () => {
     // Example: Navigate to the first topic of the course
     // This assumes you have a route set up for '/course/:courseId/topic/:topicId'
     // You would replace 'courseId' and '1' with dynamic values as needed
-    navigate(`/course/courseId/topic/1`);
+    navigate(`/user/courses/${courseId}/1`);
 
     // Alternatively, you could perform other actions here,
     // such as updating user progress in a database, etc.

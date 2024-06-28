@@ -12,6 +12,8 @@ const TopicDetail = () => {
 
   const { topicId } = useParams();
 
+  const userRole = localStorage.getItem("role");
+
   useEffect(() => {
     const fetchTopicDetails = async () => {
       try {
@@ -101,91 +103,97 @@ const TopicDetail = () => {
 
   return (
     <>
-      <p className="text-left mb-3 font-bold">Add new words</p>
-      <Form
-        className="ml-0 m-3"
-        form={form}
-        name="add-word-form"
-        layout="inline"
-        onFinish={onFinish}
-      >
-        <Form.Item
-          name="word"
-          rules={[
-            {
-              required: true,
-              message: "Please input your username!",
-            },
-          ]}
-        >
-          <Input
-            // prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Word..."
-          />
-        </Form.Item>
-        <Form.Item
-          name="meaning"
-          rules={[
-            {
-              required: true,
-              message: "Please input your password!",
-            },
-          ]}
-        >
-          <Input
-            // prefix={<LockOutlined className="site-form-item-icon" />}
-            placeholder="Meaning..."
-          />
-        </Form.Item>
-        <Form.Item
-          name="exampleSentences"
-          rules={[
-            {
-              required: true,
-              message: "Please input your example sentences!",
-            },
-          ]}
-        >
-          <Input
-            // prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Phonetic..."
-          />
-        </Form.Item>
-        <Form.Item
-          name="phonetic"
-          rules={[
-            {
-              required: true,
-              message: "Please input phonetic...!",
-            },
-          ]}
-        >
-          <Input
-            // prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Example sentences..."
-          />
-        </Form.Item>
-        <Form.Item shouldUpdate>
-          {() => (
-            <Button
-              type="primary"
-              style={{ minWidth: "100px" }}
-              htmlType="submit"
-              disabled={
-                !clientReady ||
-                !form.isFieldsTouched(true) ||
-                !!form.getFieldsError().filter(({ errors }) => errors.length)
-                  .length
-              }
+      {userRole === "TEACHER" && (
+        <>
+          <p className="text-left mb-3 font-bold">Add new words</p>
+          <Form
+            className="ml-0 m-3"
+            form={form}
+            name="add-word-form"
+            layout="inline"
+            onFinish={onFinish}
+          >
+            <Form.Item
+              name="word"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your username!",
+                },
+              ]}
             >
-              Add Word
-            </Button>
-          )}
-        </Form.Item>
-      </Form>
+              <Input
+                // prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="Word..."
+              />
+            </Form.Item>
+            <Form.Item
+              name="meaning"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your password!",
+                },
+              ]}
+            >
+              <Input
+                // prefix={<LockOutlined className="site-form-item-icon" />}
+                placeholder="Meaning..."
+              />
+            </Form.Item>
+            <Form.Item
+              name="exampleSentences"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your example sentences!",
+                },
+              ]}
+            >
+              <Input
+                // prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="Phonetic..."
+              />
+            </Form.Item>
+            <Form.Item
+              name="phonetic"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input phonetic...!",
+                },
+              ]}
+            >
+              <Input
+                // prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="Example sentences..."
+              />
+            </Form.Item>
+            <Form.Item shouldUpdate>
+              {() => (
+                <Button
+                  type="primary"
+                  style={{ minWidth: "100px" }}
+                  htmlType="submit"
+                  disabled={
+                    !clientReady ||
+                    !form.isFieldsTouched(true) ||
+                    !!form
+                      .getFieldsError()
+                      .filter(({ errors }) => errors.length).length
+                  }
+                >
+                  Add Word
+                </Button>
+              )}
+            </Form.Item>
+          </Form>
+        </>
+      )}
+
       <hr className="mt-6" />
       {showWordCollection ? (
-        <WordTable words={words} />
+        <WordTable userRole={userRole} words={words} />
       ) : (
         <p className="text-left mt-3">No word added yet.</p>
       )}

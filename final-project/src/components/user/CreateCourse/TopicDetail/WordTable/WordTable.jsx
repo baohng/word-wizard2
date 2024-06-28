@@ -39,7 +39,7 @@ const EditableCell = ({
   );
 };
 
-const WordTable = ({ words }) => {
+const WordTable = ({ userRole, words }) => {
   const [form] = Form.useForm();
   const [data, setData] = useState(words);
   const [editingKey, setEditingKey] = useState("");
@@ -111,6 +111,13 @@ const WordTable = ({ words }) => {
     }
   };
 
+  const startToLearn = () => {
+    // Example: Navigate to the first word of the topic
+    // This assumes you have a route set up for '/topic/:topicId/word/:wordId'
+    // You would replace 'topicId' and '1' with dynamic values as needed
+    console.log("Start to learn");
+  };
+
   const isEditing = (record) => record.id === editingKey;
   const edit = (record) => {
     form.setFieldsValue({
@@ -148,7 +155,8 @@ const WordTable = ({ words }) => {
       console.log("Validate Failed:", errInfo);
     }
   };
-  const columns = [
+
+  let columns = [
     {
       title: "Words",
       dataIndex: "word",
@@ -173,7 +181,10 @@ const WordTable = ({ words }) => {
       width: "30%",
       editable: true,
     },
-    {
+  ];
+
+  if (userRole !== "STUDENT") {
+    columns.push({
       title: "Operation",
       dataIndex: "operation",
       render: (_, record) => {
@@ -212,8 +223,9 @@ const WordTable = ({ words }) => {
           </>
         );
       },
-    },
-  ];
+    });
+  }
+
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
       return col;
@@ -230,23 +242,31 @@ const WordTable = ({ words }) => {
     };
   });
   return (
-    <Form form={form} component={false}>
-      <Table
-        components={{
-          body: {
-            cell: EditableCell,
-          },
-        }}
-        bordered
-        dataSource={data}
-        columns={mergedColumns}
-        rowClassName="editable-row"
-        rowKey={(record) => record.id}
-        pagination={{
-          onChange: cancel,
-        }}
-      />
-    </Form>
+    <>
+      <Form form={form} component={false}>
+        <Table
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
+          bordered
+          dataSource={data}
+          columns={mergedColumns}
+          rowClassName="editable-row"
+          rowKey={(record) => record.id}
+          pagination={{
+            onChange: cancel,
+          }}
+        />
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={startToLearn}
+        >
+          Start to learn
+        </button>
+      </Form>
+    </>
   );
 };
 export default WordTable;

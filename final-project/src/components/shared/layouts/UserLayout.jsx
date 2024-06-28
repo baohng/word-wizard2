@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
 import {
   HomeOutlined,
@@ -13,7 +12,6 @@ import {
 import { Layout, Menu, Row, Col, theme } from "antd";
 import TrackCalendar from "../../materials/Calendar";
 import SimpleCard from "../../shared/common/Card/SimpleCard";
-import { AuthContext } from "../../auth-component/AuthProvider";
 
 const { Header, Content, Sider } = Layout;
 
@@ -22,7 +20,7 @@ const MainLayout = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const { userRole } = useContext(AuthContext);
+  const userRole = localStorage.getItem("role");
 
   return (
     <Layout hasSider>
@@ -65,7 +63,7 @@ const MainLayout = () => {
               label: <Link to="/user/review">Review</Link>,
             },
 
-            ...(userRole === "teacher"
+            ...(userRole === "TEACHER"
               ? [
                   {
                     key: "create-course",
