@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Input } from "antd";
 import CreateTopicForm from "../CreateTopicForm/CreateTopicForm";
 
 import ListEditTopic from "../Topic/ListEditTopic";
-// import { AuthContext } from "../../../auth-component/AuthProvider";
+import { AuthContext } from "../../../auth-component/AuthProvider";
 
 const { Search } = Input;
 const CourseDetail = () => {
@@ -12,6 +12,7 @@ const CourseDetail = () => {
   // course state
   const [course, setCourse] = useState({});
   const [showTopicForm, setShowTopicForm] = useState(false);
+  const { userRole } = useContext(AuthContext);
 
   // Fetch course details when component mounts or courseId changes
   useEffect(() => {
@@ -42,7 +43,7 @@ const CourseDetail = () => {
         {!showTopicForm && (
           <Search
             className="mr-4 mt-0.5"
-            placeholder="Search course"
+            placeholder="Search topic"
             onSearch={""}
             enterButton
             style={{
@@ -51,12 +52,14 @@ const CourseDetail = () => {
           />
         )}
 
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => setShowTopicForm(!showTopicForm)}
-        >
-          {showTopicForm ? "Back to all topics" : "Create Topic"}
-        </button>
+        {userRole === "teacher" && (
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => setShowTopicForm(!showTopicForm)}
+          >
+            {showTopicForm ? "Back to all topics" : "Create Topic"}
+          </button>
+        )}
       </div>
       {showTopicForm ? (
         <CreateTopicForm courseId={courseId} />
