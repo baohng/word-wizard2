@@ -31,7 +31,6 @@ public class UserController {
     public ResponseEntity<User> signIn(@RequestBody User user) {
         User signedInUser = userService.signIn(user.getEmail(), user.getPassword());
         if (signedInUser != null) {
-
             return ResponseEntity.ok(signedInUser);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

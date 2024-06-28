@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
-import { List, Space } from "antd";
+import { Button, List, Space } from "antd";
 // import { Avatar } from "antd";
 
 // const defaultImageUrl = `https://api.dicebear.com/7.x/miniavs/svg?seed=1`;
@@ -22,6 +22,7 @@ IconText.propTypes = {
 const ListCommon = () => {
   const [courses, setCourses] = useState([]);
 
+  // Fetch courses when component mounts
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -38,6 +39,30 @@ const ListCommon = () => {
 
     fetchCourses();
   }, []);
+
+  // Handle enrollment
+  const enrollCourse = async (courseId) => {
+    try {
+      const response = await fetch("http://localhost:8080/enrollments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: "",
+          courseId: courseId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to enroll in course");
+      }
+
+      // Handle successful enrollment (e.g., show a message or update UI)
+    } catch (error) {
+      console.error("Error enrolling in course:", error);
+    }
+  };
 
   return (
     <List
@@ -75,6 +100,16 @@ const ListCommon = () => {
               text="2"
               key="list-vertical-message"
             />,
+            <Button
+              onClick={() => enrollCourse(course.id)}
+              style={{
+                minWidth: "100px",
+              }}
+              key="list-item-button"
+              type="primary"
+            >
+              Enroll
+            </Button>,
           ]}
           extra={
             <img

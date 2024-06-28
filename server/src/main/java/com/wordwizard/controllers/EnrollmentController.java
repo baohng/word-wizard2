@@ -3,14 +3,13 @@ package com.wordwizard.controllers;
 import com.wordwizard.models.Enrollment;
 import com.wordwizard.services.EnrollmentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/enrollments")
+@RequestMapping("/api/enrollments")
 @CrossOrigin(origins = "http://localhost:5173")
 public class EnrollmentController {
     private final EnrollmentService enrollmentService;
@@ -20,6 +19,11 @@ public class EnrollmentController {
         this.enrollmentService = enrollmentService;
     }
 
+    @PostMapping("/enroll")
+    public ResponseEntity<Enrollment> enroll(@RequestBody Enrollment enrollment) {
+        enrollmentService.addEnrollment(enrollment);
+        return ResponseEntity.ok(enrollment);
+    }
 
 
     public void addEnrollment(Enrollment enrollment) {
