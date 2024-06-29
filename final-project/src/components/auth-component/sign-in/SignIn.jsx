@@ -35,7 +35,7 @@ const SignIn = () => {
       if (data.roles.includes("STUDENT") || data.roles.includes("TEACHER")) {
         navigate("/user/home");
       } else {
-        navigate("/admin");
+        window.location.href = "http://localhost:3030";
       }
     } catch (error) {
       console.error(`There was an error: ${error}`);
