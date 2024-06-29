@@ -4,6 +4,8 @@ import com.wordwizard.models.UserWord;
 import com.wordwizard.repos.UserWordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import java.util.List;
 
@@ -15,6 +17,18 @@ public class UserWordService {
     public UserWordService(UserWordRepository userWordRepository) {
         this.userWordRepository = userWordRepository;
     }
+
+    public UserWord createUserWord(UserWord userWord) {
+        return userWordRepository.save(userWord);
+    }
+
+
+
+
+
+
+
+
 
     public List<UserWord> getAllUserWords() {
         return userWordRepository.findAll();
@@ -44,7 +58,4 @@ public class UserWordService {
         return null;
     }
 
-    public UserWord createUserWord(UserWord userWord) {
-        return null;
-    }
 }

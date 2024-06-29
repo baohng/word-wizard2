@@ -1,10 +1,12 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { Avatar, List } from "antd";
 import { Link } from "react-router-dom";
 
 // const count = 5;
-const ListEditCourse = () => {
+const ListEditCourse = ({ searchQuery }) => {
   const [initLoading, setInitLoading] = useState(true);
+  const [filteredCourses, setFilteredCourses] = useState([]);
   // const [loading, setLoading] = useState(false);
 
   const [courses, setCourses] = useState([]);
@@ -18,6 +20,7 @@ const ListEditCourse = () => {
         }
         const data = await response.json();
         setCourses(data);
+        setFilteredCourses(data);
         setInitLoading(false);
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -28,6 +31,7 @@ const ListEditCourse = () => {
   }, []);
 
   // const onLoadMore = () => {
+
   //   setLoading(true);
   //   setCourses(
   //     courses.concat(
@@ -60,6 +64,24 @@ const ListEditCourse = () => {
   //       <Button onClick={onLoadMore}>loading more</Button>
   //     </div>
   //   ) : null;
+
+  useEffect(() => {
+    // Call filterCourses only if searchQuery is not empty
+    if (searchQuery) {
+      filterCourses(searchQuery);
+    } else {
+      // If searchQuery is empty, reset filteredCourses to all courses
+      setFilteredCourses(courses);
+    }
+  }, [searchQuery, courses]); // Depend on searchQuery and courses
+
+  const filterCourses = (searchQuery) => {
+    const filtered = courses.filter((course) =>
+      course.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredCourses(filtered);
+  };
+
   console.log("courses: ", courses);
   return (
     <>
@@ -68,7 +90,7 @@ const ListEditCourse = () => {
         loading={initLoading}
         itemLayout="horizontal"
         // loadMore={loadMore}
-        dataSource={courses}
+        dataSource={searchQuery ? filteredCourses : courses}
         renderItem={(course) => (
           <List.Item
             key={course.id}
@@ -85,7 +107,9 @@ const ListEditCourse = () => {
               avatar={
                 <Avatar
                   src={
-                    course.picture ? course.picture.large : "defaultAvatarUrl"
+                    course.picture
+                      ? course.picture.large
+                      : `https://api.dicebear.com/7.x/miniavs/svg?seed=1`
                   }
                 />
               }

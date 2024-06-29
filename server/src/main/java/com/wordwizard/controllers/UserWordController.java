@@ -3,9 +3,11 @@ package com.wordwizard.controllers;
 import com.wordwizard.models.UserWord;
 import com.wordwizard.services.UserWordService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user/word")
@@ -16,6 +18,16 @@ public class UserWordController {
     @Autowired
     public UserWordController(UserWordService userWordService) {
         this.userWordService = userWordService;
+    }
+
+    @PostMapping("/add-words")
+    public ResponseEntity<UserWord> createUserWord(@RequestBody UserWord userWord) {
+        try {
+            UserWord savedUserWord = userWordService.createUserWord(userWord);
+            return new ResponseEntity<>(savedUserWord, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public UserWord getUserWord() {
@@ -30,7 +42,4 @@ public class UserWordController {
         return userWordService.deleteUserWord();
     }
 
-    public UserWord createUserWord(UserWord userWord) {
-        return userWordService.createUserWord(userWord);
-    }
 }

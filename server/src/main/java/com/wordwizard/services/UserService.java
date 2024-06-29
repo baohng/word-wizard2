@@ -25,7 +25,7 @@ public class UserService {
 
     // Implement the signUp method
     public User signUp(User user) {
-        UserRole defaultRole = UserRole.STUDENT;
+        UserRole defaultRole = UserRole.TEACHER;
         // Password is set without encoding
         user.setIsActive(true);
         user.setRoles(Collections.singleton(defaultRole));

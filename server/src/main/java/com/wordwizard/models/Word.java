@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "words")
 @Getter
@@ -32,5 +34,8 @@ public class Word {
     private String pathOfSpeech;
 
     private String exampleSentences;
+
+    @OneToMany(mappedBy = "word")
+    private List<UserWord> userWords;
 
 }

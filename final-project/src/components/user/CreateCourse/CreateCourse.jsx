@@ -7,6 +7,11 @@ const { Search } = Input;
 const CreateCourse = () => {
   // course state
   const [showForm, setShowForm] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (value) => {
+    setSearchQuery(value);
+  };
 
   return (
     <div>
@@ -17,7 +22,7 @@ const CreateCourse = () => {
           <Search
             className="mr-4 mt-0.5"
             placeholder="Search course"
-            onSearch={""}
+            onSearch={handleSearch}
             enterButton
             style={{
               width: 400,
@@ -35,7 +40,7 @@ const CreateCourse = () => {
       {showForm ? (
         <CreateCourseForm onFormSubmit={() => setShowForm(false)} />
       ) : (
-        <ListEditCourse />
+        <ListEditCourse searchQuery={searchQuery} />
       )}
     </div>
   );

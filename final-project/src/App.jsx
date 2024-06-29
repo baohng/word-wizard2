@@ -40,7 +40,7 @@ function App() {
         <Route path="handbook" element={<Handbook />} />
         <Route path="dictionary" element={<Dictionary />} />
         <Route path="review" element={<Review />} />
-        {auth.role === "teacher" && (
+        {localStorage.getItem("role") === "TEACHER" && (
           <Route path="create-course" element={<CreateCourse />} />
         )}
         <Route path="courses/:courseId" element={<CourseDetail />} />

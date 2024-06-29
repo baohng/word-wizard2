@@ -12,6 +12,7 @@ const FlowUI = () => {
   const [words, setWords] = useState([]);
   const [currentWordIndex, setCurrentWordIndex] = useState(0); // Step 1: Current word index
   const [loading, setLoading] = useState(true);
+  const [correctlyTypedWords, setCorrectlyTypedWords] = useState([]);
 
   useEffect(() => {
     const fetchWords = async () => {
@@ -38,10 +39,47 @@ const FlowUI = () => {
     }
   }, [topicId]);
 
-  const handleNextWord = () => {
+  const handleNextWord = async () => {
     // Step 3: Increment current index to show next word
     if (currentWordIndex < words.length - 1) {
+      // Before moving to the next word, send the current word to UserWord
+      await sendCurrentWordToUserWord(words[currentWordIndex]);
       setCurrentWordIndex(currentWordIndex + 1);
+    } else {
+      if (correctlyTypedWords.length === words.length) {
+        console.log("All words typed correctly!");
+        // Perform any action here, like showing a success message or navigating to another page
+      }
+    }
+  };
+
+  const sendCurrentWordToUserWord = async (currentWord) => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/user/word/add-words",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: localStorage.getItem("userId"),
+            word: currentWord.id,
+            isLearned: true,
+            learnedDate: new Date().toISOString().split("T")[0],
+            masteryLevel: 1,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Word sent to UserWord successfully:", result);
+    } catch (error) {
+      console.error("Error sending word to UserWord:", error);
     }
   };
 
@@ -56,6 +94,7 @@ const FlowUI = () => {
       userInput.trim().toLowerCase() === currentWord.word.trim().toLowerCase()
     ) {
       console.log("Correct!");
+      setCorrectlyTypedWords([...correctlyTypedWords, currentWord]);
       handleNextWord();
       // Handle correct input (e.g., show success message, move to next word)
     } else {
@@ -85,12 +124,6 @@ const FlowUI = () => {
               bordered={false}
             >
               {currentWord.exampleSentences}
-            </Card>
-            <Card
-              className="p-12 m-2 border-2 border-gray-300"
-              title={currentWord.word}
-              bordered={false}
-            >
               <p>{currentWord.phonetic}</p>
               <p>{currentWord.meaning}</p>
             </Card>
