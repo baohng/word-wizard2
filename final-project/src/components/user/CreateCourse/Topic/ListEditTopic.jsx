@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Card, List } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -18,8 +19,9 @@ const fetchTopicsByCourse = async (courseId) => {
   }
 };
 
-const ListEditTopic = () => {
+const ListEditTopic = ({ searchQuery }) => {
   const [topics, setTopics] = useState([]);
+  const [filteredTopics, setFilteredTopics] = useState([]);
   const courseId = useParams().courseId;
 
   useEffect(() => {
@@ -32,11 +34,29 @@ const ListEditTopic = () => {
       const fetchedTopics = await fetchTopicsByCourse(courseId);
       if (fetchedTopics) {
         setTopics(fetchedTopics);
+        setFilteredTopics(fetchedTopics);
       }
     };
 
     fetchAndSetTopics();
   }, [courseId]); // Re-run this effect if courseId changes
+
+  useEffect(() => {
+    // Call filterTopics only if searchQuery is not empty
+    if (searchQuery) {
+      filterTopics(searchQuery);
+    } else {
+      // If searchQuery is empty, reset filteredTopics to all topics
+      setFilteredTopics(topics);
+    }
+  }, [searchQuery, topics]); // Depend on searchQuery and topics
+
+  const filterTopics = (searchQuery) => {
+    const filtered = topics.filter((topic) =>
+      topic.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredTopics(filtered);
+  };
 
   return (
     <List
@@ -49,7 +69,7 @@ const ListEditTopic = () => {
         xl: 6,
         xxl: 3,
       }}
-      dataSource={topics}
+      dataSource={searchQuery ? filteredTopics : topics}
       renderItem={(topics) => (
         <List.Item className="text-left">
           <Link

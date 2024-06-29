@@ -12,6 +12,12 @@ const CourseDetail = () => {
   const [course, setCourse] = useState({});
   const [showTopicForm, setShowTopicForm] = useState(false);
   const userRole = localStorage.getItem("role");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (value) => {
+    setSearchQuery(value);
+  };
+
   const navigate = useNavigate();
 
   // Fetch course details when component mounts or courseId changes
@@ -54,7 +60,7 @@ const CourseDetail = () => {
           <Search
             className="mr-4 mt-0.5"
             placeholder="Search topic"
-            onSearch={""}
+            onSearch={handleSearch}
             enterButton
             style={{
               width: 400,
@@ -74,7 +80,7 @@ const CourseDetail = () => {
       {showTopicForm ? (
         <CreateTopicForm courseId={courseId} />
       ) : (
-        <ListEditTopic />
+        <ListEditTopic searchQuery={searchQuery} />
       )}
 
       {userRole === "STUDENT" && (
