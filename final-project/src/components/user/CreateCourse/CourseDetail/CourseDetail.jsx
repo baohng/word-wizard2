@@ -1,7 +1,8 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Input } from "antd";
 import CreateTopicForm from "../CreateTopicForm/CreateTopicForm";
+
 import ListEditTopic from "../Topic/ListEditTopic";
 
 const { Search } = Input;
@@ -10,6 +11,8 @@ const CourseDetail = () => {
   // course state
   const [course, setCourse] = useState({});
   const [showTopicForm, setShowTopicForm] = useState(false);
+  const userRole = localStorage.getItem("role");
+  const navigate = useNavigate();
 
   // Fetch course details when component mounts or courseId changes
   useEffect(() => {
@@ -32,6 +35,16 @@ const CourseDetail = () => {
     fetchCourseDetails();
   }, [courseId]);
 
+  const handleStartToLearn = () => {
+    // Example: Navigate to the first topic of the course
+    // This assumes you have a route set up for '/course/:courseId/topic/:topicId'
+    // You would replace 'courseId' and '1' with dynamic values as needed
+    navigate(`/course/courseId/topic/1`);
+
+    // Alternatively, you could perform other actions here,
+    // such as updating user progress in a database, etc.
+  };
+
   return (
     <div>
       <h1>{course.name}</h1>
@@ -40,7 +53,7 @@ const CourseDetail = () => {
         {!showTopicForm && (
           <Search
             className="mr-4 mt-0.5"
-            placeholder="Search course"
+            placeholder="Search topic"
             onSearch={""}
             enterButton
             style={{
@@ -49,17 +62,28 @@ const CourseDetail = () => {
           />
         )}
 
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={() => setShowTopicForm(!showTopicForm)}
-        >
-          {showTopicForm ? "Back to all topics" : "Create Topic"}
-        </button>
+        {userRole === "TEACHER" && (
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => setShowTopicForm(!showTopicForm)}
+          >
+            {showTopicForm ? "Back to all topics" : "Create Topic"}
+          </button>
+        )}
       </div>
       {showTopicForm ? (
         <CreateTopicForm courseId={courseId} />
       ) : (
         <ListEditTopic />
+      )}
+
+      {userRole === "STUDENT" && (
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={handleStartToLearn}
+        >
+          Start to learn
+        </button>
       )}
     </div>
   );

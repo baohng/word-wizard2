@@ -33,8 +33,9 @@ public class EnrollmentService {
         enrollmentRepository.deleteById(id);
     }
 
-    public void addEnrollment(Enrollment enrollment) {
+    public Enrollment addEnrollment(Enrollment enrollment) {
         enrollmentRepository.save(enrollment);
+        return enrollment;
     }
 
     public void removeEnrollment(Enrollment enrollment) {

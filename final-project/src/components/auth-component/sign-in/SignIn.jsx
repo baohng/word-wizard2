@@ -27,6 +27,9 @@ const SignIn = () => {
 
       // Extract data from the response
       const data = await response.json();
+      // Store the token and role in the local storage
+      localStorage.setItem("role", data.roles[0]);
+      localStorage.setItem("userId", data.userId);
 
       // If the sign in is successful, redirect to the dashboard
       if (data.roles.includes("STUDENT") || data.roles.includes("TEACHER")) {
@@ -34,9 +37,6 @@ const SignIn = () => {
       } else {
         navigate("/admin");
       }
-
-      // Store the token and role in the local storage
-      localStorage.setItem("role", data.roles[0]);
     } catch (error) {
       console.error(`There was an error: ${error}`);
     }

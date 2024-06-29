@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
 import { Button, List, Space } from "antd";
 // import { Avatar } from "antd";
@@ -21,6 +22,7 @@ IconText.propTypes = {
 
 const ListCommon = () => {
   const [courses, setCourses] = useState([]);
+  const navigate = useNavigate();
 
   // Fetch courses when component mounts
   useEffect(() => {
@@ -42,23 +44,45 @@ const ListCommon = () => {
 
   // Handle enrollment
   const enrollCourse = async (courseId) => {
+    const currentUserId = localStorage.getItem("userId");
+    console.log(
+      "Attempting to enroll. UserId:",
+      currentUserId,
+      "CourseId:",
+      courseId
+    );
+
     try {
-      const response = await fetch("http://localhost:8080/enrollments", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: "",
-          courseId: courseId,
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:8080/api/enrollments/enroll",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: currentUserId,
+            courseId: courseId,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Failed to enroll in course");
+        const errorDetails = await response.text(); // Attempt to read response text for more details
+        console.error(
+          "Failed to enroll in course. Status:",
+          response.status,
+          "Details:",
+          errorDetails
+        );
+        throw new Error(
+          `Failed to enroll in course. Status: ${response.status}`
+        );
       }
 
       // Handle successful enrollment (e.g., show a message or update UI)
+      navigate(`/user/courses/${courseId}`);
+      console.log("Successfully enrolled in course");
     } catch (error) {
       console.error("Error enrolling in course:", error);
     }
@@ -84,6 +108,7 @@ const ListCommon = () => {
             marginBottom: "10px",
           }}
           key={course.id}
+          onClick={() => navigate(`/user/courses/${course.id}`)}
           actions={[
             <IconText
               icon={StarOutlined}

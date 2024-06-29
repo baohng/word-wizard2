@@ -39,7 +39,9 @@ function App() {
         <Route path="handbook" element={<Handbook />} />
         <Route path="dictionary" element={<Dictionary />} />
         <Route path="review" element={<Review />} />
-        <Route path="/user/create-course" element={<CreateCourse />}></Route>
+        {auth.role === "teacher" && (
+          <Route path="create-course" element={<CreateCourse />} />
+        )}
         <Route path="courses/:courseId" element={<CourseDetail />} />
         <Route path="courses/:courseId/:topicId" element={<TopicDetail />} />
 

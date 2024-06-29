@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -28,19 +31,22 @@ public class UserController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<User> signIn(@RequestBody User user) {
+    public ResponseEntity<Map<String, Object>> signIn(@RequestBody User user) {
         User signedInUser = userService.signIn(user.getEmail(), user.getPassword());
         if (signedInUser != null) {
-            return ResponseEntity.ok(signedInUser);
+            Map<String, Object> response = new HashMap<>();
+            response.put("userId", signedInUser.getUserId()); // Assuming there's a getId() method.
+            response.put("roles", signedInUser.getRoles()); // Assuming roles are important for your client.
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
     public void adminOnlyEndpoint() {
-
-
     }
+
+
 
     public void updateUser() {
         // Update user

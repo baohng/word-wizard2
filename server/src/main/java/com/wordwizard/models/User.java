@@ -1,5 +1,6 @@
 package com.wordwizard.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,6 +54,7 @@ public class User {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonManagedReference("user-enrollment")
     private List<Enrollment> enrollments = new ArrayList<>();
 
     @OneToMany(
