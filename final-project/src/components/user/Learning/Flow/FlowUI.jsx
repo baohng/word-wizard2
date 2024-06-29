@@ -4,6 +4,7 @@ import LearnProgressBar from "../Progress/Progress";
 import "../FlashCard/flashcard.styles.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import UserTypeWord from "../UserInteract/UserTypeWord";
 
 const FlowUI = () => {
   // const [isFlipped, setIsFlipped] = useState(false);
@@ -44,12 +45,28 @@ const FlowUI = () => {
     }
   };
 
+  const currentWord =
+    words && words.length > currentWordIndex ? words[currentWordIndex] : null;
+
+  const handleUserTypeWordInput = (userInput) => {
+    console.log("User typed: ", userInput);
+    // Compare userInput with the current word's word property
+    if (
+      currentWord &&
+      userInput.trim().toLowerCase() === currentWord.word.trim().toLowerCase()
+    ) {
+      console.log("Correct!");
+      handleNextWord();
+      // Handle correct input (e.g., show success message, move to next word)
+    } else {
+      console.log("Incorrect. Try again!");
+      // Handle incorrect input (e.g., show error message)
+    }
+  };
+
   if (loading) {
     return <Spin size="large" />;
   }
-
-  const currentWord =
-    words && words.length > currentWordIndex ? words[currentWordIndex] : null;
 
   return (
     <div>
@@ -61,22 +78,26 @@ const FlowUI = () => {
           justify="center"
           style={{ display: "flex", justifyContent: "center" }}
         >
-          <Col span={8}>
+          <Col span={12}>
             <Card
-              className="p-12 border-2 border-gray-300"
+              className="p-12 m-2 border-2 border-gray-300"
               title={currentWord.word}
               bordered={false}
             >
               {currentWord.exampleSentences}
             </Card>
             <Card
-              className="p-12 border-2 border-gray-300"
+              className="p-12 m-2 border-2 border-gray-300"
               title={currentWord.word}
               bordered={false}
             >
               <p>{currentWord.phonetic}</p>
               <p>{currentWord.meaning}</p>
             </Card>
+            <UserTypeWord
+              onSubmit={handleUserTypeWordInput}
+              currentWord={currentWord ? currentWord : ""}
+            />
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
               onClick={handleNextWord}
