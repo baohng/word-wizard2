@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Form, Input, InputNumber, Popconfirm, Table, Typography } from "antd";
 
 const EditableCell = ({
@@ -259,12 +259,14 @@ const WordTable = ({ userRole, words }) => {
             onChange: cancel,
           }}
         />
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          onClick={startToLearn}
-        >
-          Start to learn
-        </button>
+        <Link to={`/user/learn/${topicId}`} className="text-blue-500">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={startToLearn}
+          >
+            Start to learn
+          </button>
+        </Link>
       </Form>
     </>
   );

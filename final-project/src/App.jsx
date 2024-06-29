@@ -14,6 +14,7 @@ import Review from "./components/user/Review/Review";
 import CreateCourse from "./components/user/CreateCourse/CreateCourse";
 import CourseDetail from "./components/user/CreateCourse/CourseDetail/CourseDetail";
 import TopicDetail from "./components/user/CreateCourse/TopicDetail/TopicDetail";
+import FlowUI from "./components/user/Learning/Flow/FlowUI";
 
 function App() {
   const { auth } = useContext(AuthContext);
@@ -44,6 +45,7 @@ function App() {
         )}
         <Route path="courses/:courseId" element={<CourseDetail />} />
         <Route path="courses/:courseId/:topicId" element={<TopicDetail />} />
+        <Route path="learn/:topicId" element={<FlowUI />} />
 
         {/* <Route path="profile" element={<Handbook />} />
         <Route path="settings" element={<Home />} />
