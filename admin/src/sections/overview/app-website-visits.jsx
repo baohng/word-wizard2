@@ -23,12 +23,12 @@ export default function AppWebsiteVisits({ title, subheader, chart, ...other }) 
     },
     labels,
     xaxis: {
-      type: 'category', // Ensure the x-axis is treated as categories
-      categories: [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-      ],
-    },
+    type: 'category', // Ensure the x-axis is treated as categories
+    categories: [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ],
+  },
     tooltip: {
       shared: true,
       intersect: false,
@@ -48,7 +48,7 @@ export default function AppWebsiteVisits({ title, subheader, chart, ...other }) 
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} />
 
-      <Box sx={{ p: 5, pb: 12 }}>
+      <Box sx={{ p: 3, pb: 1 }}>
         <Chart
           dir="ltr"
           type="line"
