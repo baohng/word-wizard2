@@ -139,13 +139,16 @@ const MainLayout = () => {
                   }}
                 >
                   {location.pathname === "/user/home" && <TrackCalendar /> && (
+                    <>
+                      <TrackCalendar />
                       <SimpleCard title="You have learned" content="11 words" />
-                    ) && (
+
                       <SimpleCard
                         title="You have studied continuously for"
                         content="1 day"
                       />
-                    )}
+                    </>
+                  )}
                 </div>
               </Content>
             </Col>

@@ -1,9 +1,9 @@
-import { Row, Col, Card, Spin } from "antd";
+import { Row, Col, Card, Spin, Modal } from "antd";
 // import { useState } from "react"; a
 import LearnProgressBar from "../Progress/Progress";
 import "../FlashCard/flashcard.styles.css";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import UserTypeWord from "../UserInteract/UserTypeWord";
 
 const FlowUI = () => {
@@ -13,6 +13,8 @@ const FlowUI = () => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0); // Step 1: Current word index
   const [loading, setLoading] = useState(true);
   const [correctlyTypedWords, setCorrectlyTypedWords] = useState([]);
+  const [inputStatus, setInputStatus] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchWords = async () => {
@@ -27,6 +29,14 @@ const FlowUI = () => {
         const wordsData = await response.json();
         console.log("words: ", wordsData);
         setWords(wordsData);
+
+        // Check if there are no words and display the modal
+        if (wordsData && wordsData.length === 0) {
+          Modal.success({
+            title: "Congratulations!",
+            content: "You have completed all the words in this topic!",
+          });
+        }
       } catch (error) {
         console.error("Error fetching data: ", error);
       } finally {
@@ -49,6 +59,9 @@ const FlowUI = () => {
       if (correctlyTypedWords.length === words.length) {
         console.log("All words typed correctly!");
         // Perform any action here, like showing a success message or navigating to another page
+        setTimeout(() => {
+          navigate(`/user/courses/${topicId}`);
+        }, 1000);
       }
     }
   };
@@ -96,9 +109,11 @@ const FlowUI = () => {
       console.log("Correct!");
       setCorrectlyTypedWords([...correctlyTypedWords, currentWord]);
       handleNextWord();
+      setInputStatus("Correct");
       // Handle correct input (e.g., show success message, move to next word)
     } else {
       console.log("Incorrect. Try again!");
+      setInputStatus("Incorrect. Try again!");
       // Handle incorrect input (e.g., show error message)
     }
   };
@@ -110,7 +125,10 @@ const FlowUI = () => {
   return (
     <div>
       <h1>FlowUI Component</h1>
-      <LearnProgressBar />
+      <LearnProgressBar
+        currentWordIndex={currentWordIndex + 1}
+        totalWords={words.length}
+      />
       <div style={{ marginTop: "100px" }}>
         <Row
           gutter={16}
@@ -131,6 +149,14 @@ const FlowUI = () => {
               onSubmit={handleUserTypeWordInput}
               currentWord={currentWord ? currentWord : ""}
             />
+            {inputStatus && (
+              <p
+                className="text-lg text-center mt-4"
+                style={{ color: inputStatus === "Correct" ? "green" : "red" }}
+              >
+                {inputStatus} {inputStatus === "Correct" ? "👍" : "👎"}
+              </p>
+            )}
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
               onClick={handleNextWord}

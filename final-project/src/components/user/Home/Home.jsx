@@ -4,7 +4,7 @@ const Home = () => {
   return (
     <>
       <div>
-        <h1>Home</h1>
+        <h1 className="text-left font-bold text-xl mb-4">Home</h1>
         <ListCommon />
       </div>
     </>

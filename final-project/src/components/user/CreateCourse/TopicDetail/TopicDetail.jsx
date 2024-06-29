@@ -140,6 +140,7 @@ const TopicDetail = () => {
             >
               <Input
                 // prefix={<UserOutlined className="site-form-item-icon" />}
+
                 placeholder="Word..."
               />
             </Form.Item>
@@ -154,6 +155,7 @@ const TopicDetail = () => {
             >
               <Input
                 // prefix={<LockOutlined className="site-form-item-icon" />}
+
                 placeholder="Meaning..."
               />
             </Form.Item>
@@ -168,6 +170,7 @@ const TopicDetail = () => {
             >
               <Input
                 // prefix={<UserOutlined className="site-form-item-icon" />}
+
                 placeholder="Phonetic..."
               />
             </Form.Item>
@@ -182,6 +185,7 @@ const TopicDetail = () => {
             >
               <Input
                 // prefix={<UserOutlined className="site-form-item-icon" />}
+
                 placeholder="Example sentences..."
               />
             </Form.Item>

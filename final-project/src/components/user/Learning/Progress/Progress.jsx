@@ -1,9 +1,16 @@
+/* eslint-disable react/prop-types */
 import { Flex, Progress } from "antd";
-const LearnProgressBar = () => (
-  <Flex gap="small" vertical>
-    <Progress percent={30} />
-    <Progress percent={100} />
-    <Progress percent={50} showInfo={false} />
-  </Flex>
-);
+
+// Accept currentWordIndex and totalWords as props
+const LearnProgressBar = ({ currentWordIndex, totalWords }) => {
+  const progressPercent =
+    totalWords > 0 ? (currentWordIndex / totalWords) * 100 : 0;
+
+  return (
+    <Flex gap="small" vertical>
+      <Progress percent={progressPercent} />
+    </Flex>
+  );
+};
+
 export default LearnProgressBar;

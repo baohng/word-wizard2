@@ -15,7 +15,7 @@ const CreateCourse = () => {
 
   return (
     <div>
-      <h1>Create Course</h1>
+      <h1 className="text-left font-bold text-xl">Create Course</h1>
 
       <div className="flex justify-end mb-10">
         {!showForm && (

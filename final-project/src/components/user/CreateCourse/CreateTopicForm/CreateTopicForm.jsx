@@ -32,7 +32,7 @@ const CreateTopicForm = ({ courseId }) => {
 
       const data = await response.json();
       console.log("Topic added successfully!", data);
-      navigate(`/user/courses/${courseId}/${data.topicId}`);
+      navigate(`/user/courses/${courseId}/${data.id}`);
     } catch (error) {
       console.error("There was an error creating the topic:", error);
     }

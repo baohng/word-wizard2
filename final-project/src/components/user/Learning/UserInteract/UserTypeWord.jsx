@@ -10,7 +10,7 @@ const UserTypeWord = ({ onSubmit, currentWord }) => {
     console.log("onChange:", text);
     setInputValue(text);
     onSubmit(text);
-    setInputValue("");
+    setTimeout(() => setInputValue(""), 100);
   };
 
   const sharedProps = {

@@ -8,7 +8,7 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Login | Minimal UI </title>
+        <title> Login | Word Wizard </title>
       </Helmet>
 
       <LoginView />

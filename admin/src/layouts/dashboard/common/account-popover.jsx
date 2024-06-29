@@ -10,6 +10,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import { account } from 'src/_mock/account';
+import { Link } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -108,7 +109,7 @@ export default function AccountPopover() {
           onClick={handleClose}
           sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
         >
-          Logout
+          <Link to="http://localhost:5173/">Logout</Link>
         </MenuItem>
       </Popover>
     </>
