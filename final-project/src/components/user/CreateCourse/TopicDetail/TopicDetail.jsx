@@ -9,6 +9,9 @@ const TopicDetail = () => {
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState(false);
   const [words, setWords] = useState([]);
+  // Add state for topic name
+  const [topicName, setTopicName] = useState("");
+  const [topicNameMeaning, setTopicNameMeaning] = useState("");
 
   const { topicId } = useParams();
 
@@ -17,16 +20,29 @@ const TopicDetail = () => {
   useEffect(() => {
     const fetchTopicDetails = async () => {
       try {
-        const response = await fetch(
+        // Fetch topic details including name
+        const topicResponse = await fetch(
+          `http://localhost:8080/api/topics/${topicId}`
+        );
+        if (!topicResponse.ok) {
+          throw new Error(`HTTP error! status: ${topicResponse.status}`);
+        }
+        const topicData = await topicResponse.json();
+
+        // Set state with fetched topic name
+        setTopicName(topicData.name); // Assuming the topic object has a 'name' property
+        setTopicNameMeaning(topicData.meaningInVietnamese); // Assuming the topic object has a 'meaning' property
+
+        // Fetch words for the topic
+        const wordsResponse = await fetch(
           `http://localhost:8080/api/topics/${topicId}/words`
         );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        if (!wordsResponse.ok) {
+          throw new Error(`HTTP error! status: ${wordsResponse.status}`);
         }
-        const data = await response.json();
-        console.log("word: ", data);
-        // Set state with fetched topic details
-        setWords(data);
+        const wordsData = await wordsResponse.json();
+        console.log("words: ", wordsData);
+        setWords(wordsData);
         setShowWordCollection(true);
       } catch (error) {
         console.error("Error fetching topic details: ", error);
@@ -190,7 +206,9 @@ const TopicDetail = () => {
           </Form>
         </>
       )}
-
+      <h1 className="text-left font-semibold text-lg">
+        {topicName} - {topicNameMeaning}
+      </h1>
       <hr className="mt-6" />
       {showWordCollection ? (
         <WordTable userRole={userRole} words={words} />

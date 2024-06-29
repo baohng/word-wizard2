@@ -21,6 +21,12 @@ public class TopicController {
         this.topicService = topicService;
     }
 
+    @GetMapping("/{topicId}")
+    public ResponseEntity<Topic> getTopicById(@PathVariable Long topicId) {
+        Topic topic = topicService.getTopicById(topicId);
+        return new ResponseEntity<>(topic, HttpStatus.OK);
+    }
+
     @GetMapping("/{topicId}/words")
     public ResponseEntity<List<Word>> getWordsByTopicId(@PathVariable Long topicId) {
         List<Word> words = topicService.getWordsByTopicId(topicId);
@@ -48,9 +54,5 @@ public class TopicController {
 
     public List<Topic> getTopics() {
         return topicService.getAllTopics();
-    }
-
-    public Topic getTopicById(Long id) {
-        return topicService.getTopicById(id);
     }
 }
