@@ -75,4 +75,8 @@ public class TopicService {
                 .orElseThrow(() -> new EntityNotFoundException("Topic not found with ID: " + topicId));
         return new ArrayList<>(topic.getWords());
     }
+    public long getAccountCount(){
+        return topicRepository.count();
+    }
+
 }

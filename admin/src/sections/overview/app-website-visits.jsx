@@ -23,8 +23,12 @@ export default function AppWebsiteVisits({ title, subheader, chart, ...other }) 
     },
     labels,
     xaxis: {
-      type: 'datetime',
-    },
+    type: 'category', // Ensure the x-axis is treated as categories
+    categories: [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ],
+  },
     tooltip: {
       shared: true,
       intersect: false,

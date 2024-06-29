@@ -1,5 +1,6 @@
 package com.wordwizard.services;
 
+import com.wordwizard.models.User;
 import com.wordwizard.models.Word;
 import com.wordwizard.repos.WordRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,7 +21,9 @@ public class WordService {
     public List<Word> getAllWords() {
         return wordRepository.findAll();
     }
-
+    public List<Word> getAllUsers() {
+        return wordRepository.findAll();
+    }
     public Word getWordById(Long id) {
         return wordRepository.findById(id).orElse(null);
     }

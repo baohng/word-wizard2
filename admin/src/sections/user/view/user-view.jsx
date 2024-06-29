@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -10,22 +10,25 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { users } from 'src/_mock/user';
-
 import Iconify from 'src/components/iconify';
-import Scrollbar from 'src/components/scrollbar';
+import Scrollbar from 'src/components/scrollbar'; 
 
+import NewUserForm from '../new-user-form'; 
 import TableNoData from '../table-no-data';
 import UserTableRow from '../user-table-row';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import UserTableToolbar from '../user-table-toolbar';
-import { emptyRows, applyFilter, getComparator } from '../utils';
-
+import { emptyRows, applyFilter, getComparator } from '../utils'; 
+// import the new user form component
+ 
+ 
 // ----------------------------------------------------------------------
 
 export default function UserPage() {
   const [usersData, setUsersData] = useState([]);
+  const [isFormOpen, setIsFormOpen] = useState(false); // state for form dialog
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -42,18 +45,11 @@ export default function UserPage() {
     fetchUserData();
   }, []);
 
-  console.log('Users:', usersData);
-
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
-  const [orderBy, setOrderBy] = useState('name');
-
+  const [orderBy, setOrderBy] = useState('username');
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleSort = (event, id) => {
@@ -66,18 +62,18 @@ export default function UserPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = users.map((n) => n.name);
+      const newSelecteds = usersData.map((n) => n.username);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event, username) => {
+    const selectedIndex = selected.indexOf(username);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, username);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -105,8 +101,36 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
+  const handleNewUserClick = () => {
+    setIsFormOpen(true);
+  };
+
+  const handleFormClose = () => {
+    setIsFormOpen(false);
+  };
+
+  const handleFormSave = async (newUser) => {
+    try {
+      const response = await fetch('http://localhost:8080/api/user-manager/add-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const savedUser = await response.json();
+      setUsersData((prevData) => [...prevData, savedUser]);
+      setIsFormOpen(false);
+    } catch (error) {
+      console.error('Error saving data: ', error);
+    }
+  };
+
   const dataFiltered = applyFilter({
-    inputData: users,
+    inputData: usersData,
     comparator: getComparator(order, orderBy),
     filterName,
   });
@@ -118,7 +142,7 @@ export default function UserPage() {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Users</Typography>
 
-        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleNewUserClick}>
           New User
         </Button>
       </Stack>
@@ -136,39 +160,36 @@ export default function UserPage() {
               <UserTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={users.length}
+                rowCount={usersData.length}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'name', label: 'Name' },
-                  { id: 'company', label: 'Company' },
-                  { id: 'role', label: 'Role' },
-                  { id: 'isVerified', label: 'Verified', align: 'center' },
-                  { id: 'status', label: 'Status' },
+                  { id: 'username', label: 'Username' },
+                  { id: 'email', label: 'Email' },
+                  { id: 'roles', label: 'Roles' },
+                  { id: 'isActive', label: 'Active', align: 'center' },
                   { id: '' },
                 ]}
               />
               <TableBody>
                 {dataFiltered
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
+                  .map((user) => (
                     <UserTableRow
-                      key={row.id}
-                      name={row.name}
-                      role={row.role}
-                      status={row.status}
-                      company={row.company}
-                      avatarUrl={row.avatarUrl}
-                      isVerified={row.isVerified}
-                      selected={selected.indexOf(row.name) !== -1}
-                      handleClick={(event) => handleClick(event, row.name)}
+                      key={user.userId} // Ensure each UserTableRow has a unique key
+                      username={user.username}
+                      email={user.email}
+                      roles={user.roles}
+                      isActive={user.isActive}
+                      selected={selected.indexOf(user.username) !== -1}
+                      handleClick={(event) => handleClick(event, user.username)}
                     />
                   ))}
 
                 <TableEmptyRows
                   height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, users.length)}
+                  emptyRows={emptyRows(page, rowsPerPage, usersData.length)}
                 />
 
                 {notFound && <TableNoData query={filterName} />}
@@ -180,13 +201,15 @@ export default function UserPage() {
         <TablePagination
           page={page}
           component="div"
-          count={users.length}
+          count={usersData.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
+
+      <NewUserForm open={isFormOpen} onClose={handleFormClose} onSave={handleFormSave} />
     </Container>
   );
 }

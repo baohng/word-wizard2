@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
@@ -14,26 +15,54 @@ import IconButton from '@mui/material/IconButton';
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 
+import EditUserForm from './edit-user-form';
+
+
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({
   selected,
-  name,
-  avatarUrl,
-  company,
-  role,
-  isVerified,
-  status,
+  username,
+  email,
+  isActive,
+  roles,
   handleClick,
 }) {
+  const [usersData, setUsersData] = useState([]);
   const [open, setOpen] = useState(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
+ 
+  const handleSaveUser = async (userData) => {
+    try {
+      // Assuming userData is the object containing the updated user information
+      const response = await fetch(`http://localhost:8080/api/user-manager/update-user`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setUsersData((prevData) => [...prevData, data]);
+    } catch (error) {
+      console.error('Error updating user data: ', error);
+    }
+  };
+
 
   const handleCloseMenu = () => {
     setOpen(null);
+  };
+    const handleOpenEditDialog = () => {
+    setIsEditDialogOpen(true);
+    handleCloseMenu(); // Close the popover menu when opening the edit dialog
   };
 
   return (
@@ -45,21 +74,23 @@ export default function UserTableRow({
 
         <TableCell component="th" scope="row" padding="none">
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt={name} src={avatarUrl} />
+            <Avatar alt={username} />
             <Typography variant="subtitle2" noWrap>
-              {name}
+              {username}
             </Typography>
           </Stack>
         </TableCell>
 
-        <TableCell>{company}</TableCell>
+        <TableCell>{email}</TableCell>
 
-        <TableCell>{role}</TableCell>
+        <TableCell>{roles.join(', ')}</TableCell>
 
-        <TableCell align="center">{isVerified ? 'Yes' : 'No'}</TableCell>
+        <TableCell align="center">{isActive ? 'Yes' : 'No'}</TableCell>
 
         <TableCell>
-          <Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label>
+          <Label color={(isActive === false && 'error') || 'success'}>
+            {isActive ? 'Active' : 'Inactive'}
+          </Label>
         </TableCell>
 
         <TableCell align="right">
@@ -79,11 +110,19 @@ export default function UserTableRow({
           sx: { width: 140 },
         }}
       >
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={handleOpenEditDialog}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
-
+        {isEditDialogOpen && (
+        <EditUserForm 
+          onSave={handleSaveUser}
+          open={isEditDialogOpen}
+          onClose={() => setIsEditDialogOpen(false)}
+          user={{  roles }}
+          // You might need to pass additional props like a function to refresh the user list
+        />
+      )}
         <MenuItem onClick={handleCloseMenu} sx={{ color: 'error.main' }}>
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Delete
@@ -94,12 +133,10 @@ export default function UserTableRow({
 }
 
 UserTableRow.propTypes = {
-  avatarUrl: PropTypes.any,
-  company: PropTypes.any,
-  handleClick: PropTypes.func,
-  isVerified: PropTypes.any,
-  name: PropTypes.any,
-  role: PropTypes.any,
-  selected: PropTypes.any,
-  status: PropTypes.string,
+  username: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  roles: PropTypes.arrayOf(PropTypes.string).isRequired,
+  handleClick: PropTypes.func.isRequired,
+  selected: PropTypes.bool.isRequired,
 };
